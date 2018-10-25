@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/navigation"
+  app:startDestination="@id/fragment_splash">
+
+  <fragment
+    android:id="@+id/fragment_splash"
+    android:name="com.moonlitdoor.release.it.splash.SplashFragment"
+    tools:layout="@layout/fragment_splash" />
+
+  <fragment
+    android:id="@+id/fragment_auth"
+    android:name="com.moonlitdoor.release.it.auth.OauthFragment"
+    tools:layout="@layout/fragment_oauth" />
+
+  <fragment
+    android:id="@+id/fragment_release"
+    android:name="com.moonlitdoor.release.it.release.ReleaseFragment"
+    tools:layout="@layout/fragment_oauth" />
+
+</navigation>
