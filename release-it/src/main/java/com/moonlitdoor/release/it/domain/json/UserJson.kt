@@ -24,7 +24,7 @@ class UserJson(
   val blog: String,
   val location: String,
   val email: String,
-  val hireable: Boolean,
+  val hireable: Boolean?,
   val bio: String,
   val public_repos: Int,
   val public_gists: Int,
@@ -38,5 +38,5 @@ class UserJson(
   val disk_usage: Int,
   val collaborators: Int,
   val two_factor_authentication: Boolean,
-  val plan: PlanJson
+  val plan: PlanJson?
 )

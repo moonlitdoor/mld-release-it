@@ -16,22 +16,22 @@ class ReleaseFragment : Fragment() {
     FragmentReleaseBinding.inflate(inflater, container, false).also {
       it.viewModel = viewModel
       it.setLifecycleOwner(this)
-      it.navigationView.setNavigationItemSelectedListener { item ->
+      it.navigationView.setNavigationItemSelectedListener { _ ->
         true
       }
 //      it.recyclerView.adapter = Adapter(inflater)
     }.root
 
-//  private class Adapter(private val layoutInflater: LayoutInflater) : ListAdapter<Repo, RepoViewHolder>(object : DiffUtil.ItemCallback<Repo>() {
-//    override fun areItemsTheSame(oldItem: Repo, newItem: Repo): Boolean = oldItem.id == newItem.id
-//    override fun areContentsTheSame(oldItem: Repo, newItem: Repo): Boolean = oldItem == newItem
+//  private class Adapter(private val layoutInflater: LayoutInflater) : ListAdapter<RepoGraph, RepoViewHolder>(object : DiffUtil.ItemCallback<RepoGraph>() {
+//    override fun areItemsTheSame(oldItem: RepoGraph, newItem: RepoGraph): Boolean = oldItem.id == newItem.id
+//    override fun areContentsTheSame(oldItem: RepoGraph, newItem: RepoGraph): Boolean = oldItem == newItem
 //  }) {
 //    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = RepoViewHolder(ListItemRepoBinding.inflate(layoutInflater, parent, false))
 //    override fun onBindViewHolder(holder: RepoViewHolder, position: Int) = holder.bind(getItem(position)).ignore()
 //  }
 //
 //  private class RepoViewHolder(private val binding: ListItemRepoBinding) : RecyclerView.ViewHolder(binding.root) {
-//    fun bind(repo: Repo) = binding.also {
+//    fun bind(repo: RepoGraph) = binding.also {
 //      it.repo = repo
 //    }
 //  }

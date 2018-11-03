@@ -15,7 +15,7 @@
     android:theme="@style/AppTheme"
     tools:ignore="GoogleAppIndexingWarning">
     <service
-      android:name=".domain.service.RepoService"
+      android:name=".domain.service.GithubService"
       android:exported="false"></service>
 
     <activity

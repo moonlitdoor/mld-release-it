@@ -4,26 +4,26 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.moonlitdoor.release.it.domain.graph.RepoGraph
+import com.moonlitdoor.release.it.domain.graph.ReleaseGraph
 
-@Entity(tableName = "repo", foreignKeys = [ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"])])
-data class RepoEntity(
+@Entity(tableName = "release", foreignKeys = [ForeignKey(entity = RepoEntity::class, parentColumns = ["id"], childColumns = ["repo_id"])])
+data class ReleaseEntity(
   @PrimaryKey(autoGenerate = true)
   val id: Long = 0,
-  @ColumnInfo(name = "user_id", index = true)
-  var userId: Long = 0,
+  @ColumnInfo(name = "repo_id")
+  val repoId: Long,
   @ColumnInfo(name = "github_id")
   val githubId: String,
-  val owner: String,
-  val name: String,
+  val name: String?,
+  val draft: Boolean,
   val description: String?
 ) {
   companion object {
-    fun from(userId: Long, graph: RepoGraph) = RepoEntity(
-      userId = userId,
+    fun from(repoId: Long, graph: ReleaseGraph) = ReleaseEntity(
+      repoId = repoId,
       githubId = graph.id,
-      owner = graph.owner,
       name = graph.name,
+      draft = graph.draft,
       description = graph.description
     )
   }

@@ -3,11 +3,10 @@ package com.moonlitdoor.release.it.component
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.moonlitdoor.release.it.extension.ignore
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.IO
-import kotlinx.coroutines.experimental.Job
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseAndroidViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
 

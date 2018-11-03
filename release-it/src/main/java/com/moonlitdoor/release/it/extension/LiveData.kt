@@ -13,7 +13,7 @@ fun <X, Y> LiveData<X>.map(block: (X) -> Y): LiveData<Y> {
   return Transformations.map(this, block)
 }
 
-fun <X> LiveData<X>.act(block: (X) -> Unit): LiveData<X> {
+fun <X> LiveData<X>.and(block: (X) -> Unit): LiveData<X> {
   return Transformations.map(this) {
     block.invoke(it)
     it

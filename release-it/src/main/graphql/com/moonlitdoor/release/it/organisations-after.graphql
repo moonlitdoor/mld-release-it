@@ -1,0 +1,38 @@
+query OrganizationsAfter($releases: Int = 75, $repositories: Int = 75, $organizations: Int = 75, $after: String!) {
+  viewer {
+    organizations(first: $organizations, after: $after) {
+      totalCount
+      pageInfo {
+        endCursor
+      }
+      nodes {
+        name
+        login
+        repositories(first: $repositories) {
+          totalCount
+          pageInfo {
+            endCursor
+          }
+          nodes {
+            name
+            id
+            description
+            viewerPermission
+            releases(first: $releases) {
+              totalCount
+              pageInfo {
+                endCursor
+              }
+              nodes {
+                id
+                name
+                description
+                isDraft
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

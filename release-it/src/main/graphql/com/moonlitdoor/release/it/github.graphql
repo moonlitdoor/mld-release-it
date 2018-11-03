@@ -1,0 +1,66 @@
+query Github($releases: Int = 75, $repositories: Int = 75, $organizations: Int = 75) {
+  viewer {
+    name
+    email
+    id
+    login
+    repositories(first: $repositories) {
+      totalCount
+      pageInfo {
+        endCursor
+      }
+      nodes {
+        name
+        id
+        description
+        viewerPermission
+        releases(first: $releases) {
+          totalCount
+          pageInfo {
+            endCursor
+          }
+          nodes {
+            id
+            name
+            description
+            isDraft
+          }
+        }
+      }
+    }
+    organizations(first: $organizations) {
+      totalCount
+      pageInfo {
+        endCursor
+      }
+      nodes {
+        name
+        login
+        repositories(first: $repositories) {
+          totalCount
+          pageInfo {
+            endCursor
+          }
+          nodes {
+            name
+            id
+            description
+            viewerPermission
+            releases(first: $releases) {
+              totalCount
+              pageInfo {
+                endCursor
+              }
+              nodes {
+                id
+                name
+                description
+                isDraft
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
