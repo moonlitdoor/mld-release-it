@@ -17,7 +17,7 @@
 
   <fragment
     android:id="@+id/fragment_release"
-    android:name="com.moonlitdoor.release.it.release.ReleaseFragment"
+    android:name="com.moonlitdoor.release.it.repository.RepositoryFragment"
     tools:layout="@layout/fragment_oauth" />
 
 </navigation>

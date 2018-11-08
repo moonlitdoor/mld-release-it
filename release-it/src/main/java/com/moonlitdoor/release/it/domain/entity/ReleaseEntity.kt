@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.moonlitdoor.release.it.domain.graph.ReleaseGraph
 
-@Entity(tableName = "release", foreignKeys = [ForeignKey(entity = RepoEntity::class, parentColumns = ["id"], childColumns = ["repo_id"])])
+@Entity(tableName = "releases", foreignKeys = [ForeignKey(entity = RepoEntity::class, parentColumns = ["id"], childColumns = ["repo_id"])])
 data class ReleaseEntity(
   @PrimaryKey(autoGenerate = true)
   val id: Long = 0,

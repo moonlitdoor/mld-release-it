@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f64f514a303ee42955559f32511a5e9b",
+    "identityHash": "2e4d0eff3977f2fd1170f4b369d57649",
     "entities": [
       {
         "tableName": "user",
@@ -132,7 +132,7 @@
         ]
       },
       {
-        "tableName": "release",
+        "tableName": "releases",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `draft` INTEGER NOT NULL, `description` TEXT, FOREIGN KEY(`repo_id`) REFERENCES `repo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
@@ -197,7 +197,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f64f514a303ee42955559f32511a5e9b\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"2e4d0eff3977f2fd1170f4b369d57649\")"
     ]
   }
 }

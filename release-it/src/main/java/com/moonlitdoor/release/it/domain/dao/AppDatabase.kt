@@ -27,6 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
 
   abstract fun userDao(): UserDao
   abstract fun repoDao(): RepoDao
+  abstract fun releaseDao(): ReleaseDao
   abstract fun serviceDao(): ServiceDao
 
   companion object {

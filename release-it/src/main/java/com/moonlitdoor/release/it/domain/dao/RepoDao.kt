@@ -11,4 +11,7 @@ interface RepoDao {
   @Query("SELECT * FROM repo")
   fun getRepos(): LiveData<List<RepoEntity>>
 
+  @Query("SELECT * FROM repo WHERE id == :id")
+  fun getRepo(id: Long): LiveData<RepoEntity>
+
 }

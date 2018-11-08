@@ -11,8 +11,9 @@ import com.moonlitdoor.release.it.domain.dao.AuthDao
 import com.moonlitdoor.release.it.domain.dao.Migrations
 import com.moonlitdoor.release.it.domain.query.*
 import com.moonlitdoor.release.it.domain.repository.AuthRepository
+import com.moonlitdoor.release.it.domain.repository.ReleaseRepository
 import com.moonlitdoor.release.it.domain.repository.RepoRepository
-import com.moonlitdoor.release.it.release.ReleaseViewModel
+import com.moonlitdoor.release.it.repository.RepositoryViewModel
 import com.moonlitdoor.release.it.splash.SplashViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -74,10 +75,12 @@ val di = module {
   single { get<Retrofit>().create(UserApi::class.java) }
   single { get<AppDatabase>().repoDao() }
   single { get<AppDatabase>().userDao() }
+  single { get<AppDatabase>().releaseDao() }
   single { get<AppDatabase>().serviceDao() }
   single { AuthRepository(get()) }
   single { RepoRepository(get()) }
+  single { ReleaseRepository(get()) }
   viewModel { SplashViewModel(get()) }
   viewModel { AuthViewModel(get()) }
-  viewModel { ReleaseViewModel(androidApplication(), get()) }
+  viewModel { RepositoryViewModel(androidApplication(), get(), get()) }
 }
