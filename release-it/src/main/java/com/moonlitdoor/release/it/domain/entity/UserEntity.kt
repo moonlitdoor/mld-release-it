@@ -1,9 +1,10 @@
 package com.moonlitdoor.release.it.domain.entity
 
+import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.moonlitdoor.release.it.domain.graph.UserGraph
+import com.moonlitdoor.release.it.domain.query.Viewer
 import org.threeten.bp.ZonedDateTime
 
 @Entity(tableName = "user")
@@ -17,16 +18,16 @@ data class UserEntity(
   val email: String,
   val created: ZonedDateTime,
   @ColumnInfo(name = "avatar_url")
-  val avatarUrl: String
+  val avatarUrl: Uri
 ) {
   companion object {
-    fun from(graph: UserGraph) = UserEntity(
+    fun from(graph: Viewer) = UserEntity(
       githubId = graph.id,
       login = graph.login,
       name = graph.name,
       email = graph.email,
-      created = graph.created,
-      avatarUrl = graph.avatarUrl
+      created = ZonedDateTime.parse(graph.createdAt),
+      avatarUrl = Uri.parse(graph.avatarUrl)
     )
 
   }

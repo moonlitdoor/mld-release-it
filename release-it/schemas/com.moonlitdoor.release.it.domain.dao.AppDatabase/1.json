@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2e4d0eff3977f2fd1170f4b369d57649",
+    "identityHash": "7e192b4a6b2ae269188a0c1b69f39a4e",
     "entities": [
       {
         "tableName": "user",
@@ -61,8 +61,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "repo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "tableName": "repository",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -109,18 +109,18 @@
         },
         "indices": [
           {
-            "name": "index_repo_user_id",
+            "name": "index_repository_user_id",
             "unique": false,
             "columnNames": [
               "user_id"
             ],
-            "createSql": "CREATE  INDEX `index_repo_user_id` ON `${TABLE_NAME}` (`user_id`)"
+            "createSql": "CREATE  INDEX `index_repository_user_id` ON `${TABLE_NAME}` (`user_id`)"
           }
         ],
         "foreignKeys": [
           {
             "table": "user",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "user_id"
@@ -133,7 +133,7 @@
       },
       {
         "tableName": "releases",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `draft` INTEGER NOT NULL, `description` TEXT, FOREIGN KEY(`repo_id`) REFERENCES `repo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `draft` INTEGER NOT NULL, `description` TEXT, FOREIGN KEY(`repo_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -178,11 +178,20 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_releases_repo_id",
+            "unique": false,
+            "columnNames": [
+              "repo_id"
+            ],
+            "createSql": "CREATE  INDEX `index_releases_repo_id` ON `${TABLE_NAME}` (`repo_id`)"
+          }
+        ],
         "foreignKeys": [
           {
-            "table": "repo",
-            "onDelete": "NO ACTION",
+            "table": "repository",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "repo_id"
@@ -197,7 +206,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"2e4d0eff3977f2fd1170f4b369d57649\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7e192b4a6b2ae269188a0c1b69f39a4e\")"
     ]
   }
 }

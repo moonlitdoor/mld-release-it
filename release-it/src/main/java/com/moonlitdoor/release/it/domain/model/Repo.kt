@@ -1,6 +1,6 @@
 package com.moonlitdoor.release.it.domain.model
 
-import com.moonlitdoor.release.it.domain.entity.RepoEntity
+import com.moonlitdoor.release.it.domain.entity.RepositoryEntity
 
 data class Repo(
   val id: Long = 0,
@@ -12,7 +12,7 @@ data class Repo(
 ) {
 
   companion object {
-    fun from(entity: RepoEntity) = Repo(
+    fun from(entity: RepositoryEntity) = Repo(
       id = entity.id,
       userId = entity.userId,
       githubId = entity.githubId,

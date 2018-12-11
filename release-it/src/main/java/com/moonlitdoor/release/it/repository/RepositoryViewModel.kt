@@ -23,7 +23,7 @@ class RepositoryViewModel(application: Application, private val repoRepository: 
       repoId.value = value
     }
 
-  val repo: LiveData<Repo> = Transformations.switchMap(repoId) { id ->
+  val repository: LiveData<Repo> = Transformations.switchMap(repoId) { id ->
     repoRepository.repo(id)
   }
 

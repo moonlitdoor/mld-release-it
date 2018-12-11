@@ -14,9 +14,6 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme"
     tools:ignore="GoogleAppIndexingWarning">
-    <service
-      android:name=".domain.service.GithubService"
-      android:exported="false"></service>
 
     <activity
       android:name=".navigation.NavigationActivity"
@@ -28,6 +25,12 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <activity android:name=".auth.AuthActivity" />
+
+    <service
+      android:name=".domain.service.GithubService"
+      android:exported="false" />
+
   </application>
 
 </manifest>

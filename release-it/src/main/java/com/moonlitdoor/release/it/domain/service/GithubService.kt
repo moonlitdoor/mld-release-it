@@ -3,195 +3,158 @@ package com.moonlitdoor.release.it.domain.service
 import android.app.IntentService
 import android.content.Context
 import android.content.Intent
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.exception.ApolloException
-import com.moonlitdoor.release.it.*
+import android.util.Log
+import com.moonlitdoor.release.it.domain.api.GithubApi
 import com.moonlitdoor.release.it.domain.dao.AuthDao
-import com.moonlitdoor.release.it.domain.dao.ServiceDao
-import com.moonlitdoor.release.it.domain.graph.DataGraph
-import com.moonlitdoor.release.it.domain.graph.ReleaseGraph
-import com.moonlitdoor.release.it.domain.graph.RepoGraph
+import com.moonlitdoor.release.it.domain.dao.ReleaseDao
+import com.moonlitdoor.release.it.domain.dao.RepositoryDao
+import com.moonlitdoor.release.it.domain.dao.UserDao
+import com.moonlitdoor.release.it.domain.entity.ReleaseEntity
+import com.moonlitdoor.release.it.domain.entity.RepositoryEntity
+import com.moonlitdoor.release.it.domain.entity.UserEntity
 import com.moonlitdoor.release.it.domain.query.*
 import com.moonlitdoor.release.it.extension.ignore
-import com.moonlitdoor.release.it.type.RepositoryPermission
 import org.koin.android.ext.android.inject
-
 
 class GithubService : IntentService("GithubService") {
 
   private val authDao: AuthDao by inject()
-  private val githubQueryProvider: GithubQueryProvider by inject()
-  private val organizationsAfterQueryProvider: OrganizationsAfterQueryProvider by inject()
-  private val organizationsRepositoriesAfterQueryProvider: OrganizationsRepositoriesAfterQueryProvider by inject()
-  private val releasesAfterQueryProvider: ReleasesAfterQueryProvider by inject()
-  private val viewerRepositoriesAfterQueryProvider: ViewerRepositoriesAfterQueryProvider by inject()
-  private val serviceDao: ServiceDao by inject()
+  private val userDao: UserDao by inject()
+  private val repositoryDao: RepositoryDao by inject()
+  private val releaseDao: ReleaseDao by inject()
+  private val githubApi: GithubApi by inject()
+
+  private val LOG_TAG = "GithubService"
 
   override fun onHandleIntent(intent: Intent?) {
-    githubQueryProvider.get().enqueue(
-      object : ApolloCall.Callback<GithubQuery.Data>() {
-        override fun onResponse(response: Response<GithubQuery.Data>) {
-          response.data()?.viewer()?.let { viewer ->
-            DataGraph.from(viewer).also {
-              viewer.repositories().nodes()?.let { repositories ->
-                repositories.filter { repo -> filter(repo.viewerPermission()) }.forEach { repo ->
-                  it.repos.add(RepoGraph.from(viewer.login(), repo).apply {
-                    repo.releases().nodes()?.let { rs ->
-                      rs.forEach { node ->
-                        releases.add(ReleaseGraph.from(node))
-                      }
-                      fetchReleases(releases, repo.releases().totalCount(), rs.size, viewer.login(), repo.name(), repo.releases().pageInfo().endCursor())
-                    }
-                  })
+    Log.i("OkHttp", "currentTime=${System.currentTimeMillis()}")
+    githubApi.queryViewer(Viewer.query()).execute().also { response ->
+      when {
+        !response.isSuccessful -> authDao.clearAuthToken()
+        response.isSuccessful -> {
+          response.body()?.data?.viewer?.let { viewer ->
+            val userId = userDao.insert(UserEntity.from(viewer))
+            Log.i(LOG_TAG, "1 ")
+            viewer.repositories.nodes
+              .filter { filter(it.viewerPermission) }
+              .forEach { repository ->
+                val repositoryId = repositoryDao.insert(RepositoryEntity.from(userId, viewer.login, repository))
+                repository.releases.nodes.forEach { release ->
+                  releaseDao.insert(ReleaseEntity.from(repositoryId, release))
                 }
-                fetchViewerRepositories(it, viewer.repositories().totalCount(), repositories.size, viewer.repositories().pageInfo().endCursor())
+                fetchReleases(repositoryId, repository.releases.totalCount, repository.releases.nodes.size, viewer.login, repository.name, repository.releases.pageInfo.endCursor)
               }
-              viewer.organizations().nodes()?.let { organizations ->
-                organizations.forEach { org ->
-                  org.repositories().nodes()?.let { repositories ->
-                    repositories.filter { repo -> filter(repo.viewerPermission()) }.forEach { repo ->
-                      it.repos.add(RepoGraph.from(org.login(), repo).apply {
-                        repo.releases().nodes()?.let { rs ->
-                          rs.forEach { node ->
-                            releases.add(ReleaseGraph.from(node))
-                          }
-                          fetchReleases(releases, repo.releases().totalCount(), rs.size, viewer.login(), repo.name(), repo.releases().pageInfo().endCursor())
-                        }
-                      })
-                    }
-                    fetchOrganizationRepositories(it, org.repositories().totalCount(), repositories.size, org.login(), org.repositories().pageInfo().endCursor())
+            fetchViewerRepositories(userId, viewer.repositories.totalCount, viewer.repositories.nodes.size, viewer.repositories.pageInfo.endCursor)
+            viewer.organizations.nodes.forEach { organization ->
+              organization.repositories.nodes
+                .filter { filter(it.viewerPermission) }
+                .forEach { repository ->
+                  val repositoryId = repositoryDao.insert(RepositoryEntity.from(userId, organization.login, repository))
+                  repository.releases.nodes.forEach { release ->
+                    releaseDao.insert(ReleaseEntity.from(repositoryId, release))
                   }
+                  fetchReleases(repositoryId, repository.releases.totalCount, repository.releases.nodes.size, organization.login, repository.name, repository.releases.pageInfo.endCursor)
                 }
-                fetchOrganizations(it, viewer.organizations().totalCount(), organizations.size, viewer.organizations().pageInfo().endCursor())
-              }
-              serviceDao.insert(it)
+              fetchOrganizationRepositories(userId, organization.repositories.totalCount, organization.repositories.nodes.size, organization.login, organization.repositories.pageInfo.endCursor)
             }
+            fetchOrganizations(userId, viewer.organizations.totalCount, viewer.organizations.nodes.size, viewer.organizations.pageInfo.endCursor)
           }
-        }
-
-        override fun onFailure(e: ApolloException) {
-          authDao.clearAuthToken()
         }
       }
-    )
+    }
+
   }
 
-  private fun fetchViewerRepositories(data: DataGraph, totalCount: Int, count: Int, endCursor: String?): Unit = if (totalCount > count) {
-    endCursor?.let {
-      viewerRepositoriesAfterQueryProvider.get(it).enqueue(
-        object : ApolloCall.Callback<ViewerRepositoriesAfterQuery.Data>() {
-          override fun onResponse(response: Response<ViewerRepositoriesAfterQuery.Data>) {
-            response.data()?.viewer()?.let { viewer ->
-              viewer.repositories().nodes()?.let { repositories ->
-                repositories.filter { repo -> filter(repo.viewerPermission()) }.forEach { repo ->
-                  data.repos.add(RepoGraph.from(viewer.login(), repo).apply {
-                    repo.releases().nodes()?.let { rs ->
-                      rs.forEach { node ->
-                        releases.add(ReleaseGraph.from(node))
-                      }
-                      fetchReleases(releases, repo.releases().totalCount(), rs.size, viewer.login(), repo.name(), repo.releases().pageInfo().endCursor())
-                    }
-                  })
-                }
-                fetchViewerRepositories(data, totalCount, count + repositories.size, viewer.repositories().pageInfo().endCursor())
-              }
-            }
-          }
-
-          override fun onFailure(e: ApolloException) {
-            authDao.clearAuthToken()
-          }
-        }
-      )
-    }.ignore()
-  } else ignore()
-
-  private fun fetchOrganizations(data: DataGraph, totalCount: Int, count: Int, endCursor: String?): Unit = if (totalCount > count) {
-    endCursor?.let {
-      organizationsAfterQueryProvider.get(it).enqueue(
-        object : ApolloCall.Callback<OrganizationsAfterQuery.Data>() {
-          override fun onResponse(response: Response<OrganizationsAfterQuery.Data>) {
-            response.data()?.viewer()?.let { viewer ->
-              viewer.organizations().nodes()?.let { organizations ->
-                organizations.forEach { org ->
-                  org.repositories().nodes()?.let { repositories ->
-                    repositories.filter { repo -> filter(repo.viewerPermission()) }.forEach { repo ->
-                      data.repos.add(RepoGraph.from(org.login(), repo).apply {
-                        repo.releases().nodes()?.let { rs ->
-                          rs.forEach { node ->
-                            releases.add(ReleaseGraph.from(node))
-                          }
-                          fetchReleases(releases, repo.releases().totalCount(), rs.size, org.login(), repo.name(), repo.releases().pageInfo().endCursor())
-                        }
-                      })
-                    }
-                    fetchOrganizationRepositories(data, org.repositories().totalCount(), repositories.size, org.login(), org.repositories().pageInfo().endCursor())
+  private fun fetchViewerRepositories(userId: Long, totalCount: Int, count: Int, endCursor: String?): Unit = if (totalCount > count) {
+    endCursor?.let { after ->
+      githubApi.queryViewerRepositories(Repository.queryViewer(after = after)).execute().also { response ->
+        when {
+          !response.isSuccessful -> authDao.clearAuthToken()
+          response.isSuccessful -> {
+            response.body()?.data?.viewer?.let { viewer ->
+              viewer.repositories.nodes
+                .filter { filter(it.viewerPermission) }
+                .forEach { repository ->
+                  val repositoryId = repositoryDao.insert(RepositoryEntity.from(userId, viewer.login, repository))
+                  repository.releases.nodes.forEach { release ->
+                    releaseDao.insert(ReleaseEntity.from(repositoryId, release))
                   }
+                  fetchReleases(repositoryId, repository.releases.totalCount, repository.releases.nodes.size, viewer.login, repository.name, repository.releases.pageInfo.endCursor)
                 }
-                fetchOrganizations(data, viewer.organizations().totalCount(), organizations.size, viewer.organizations().pageInfo().endCursor())
-              }
+              fetchViewerRepositories(userId, totalCount, count + viewer.repositories.nodes.size, viewer.repositories.pageInfo.endCursor)
             }
           }
-
-          override fun onFailure(e: ApolloException) {
-            authDao.clearAuthToken()
-          }
         }
-      )
+      }
     }.ignore()
   } else ignore()
 
-  private fun fetchOrganizationRepositories(data: DataGraph, totalCount: Int, count: Int, organization: String, endCursor: String?): Unit = if (totalCount > count) {
-    endCursor?.let {
-      organizationsRepositoriesAfterQueryProvider.get(organization, it).enqueue(
-        object : ApolloCall.Callback<OrganizationRepositoriesAfterQuery.Data>() {
-          override fun onResponse(response: Response<OrganizationRepositoriesAfterQuery.Data>) {
-            response.data()?.organization()?.let { org ->
-              org.repositories().nodes()?.let { repos ->
-                repos.filter { repo -> filter(repo.viewerPermission()) }.forEach { repo ->
-                  data.repos.add(RepoGraph.from(org.login(), repo).apply {
-                    repo.releases().nodes()?.let { rs ->
-                      rs.forEach { node ->
-                        releases.add(ReleaseGraph.from(node))
-                      }
-                      fetchReleases(releases, repo.releases().totalCount(), rs.size, org.login(), repo.name(), repo.releases().pageInfo().endCursor())
+  private fun fetchOrganizations(userId: Long, totalCount: Int, count: Int, endCursor: String?): Unit = if (totalCount > count) {
+    endCursor?.let { after ->
+      githubApi.queryViewerOrganizations(Organization.query(after = after)).execute().also { response ->
+        when {
+          !response.isSuccessful -> authDao.clearAuthToken()
+          response.isSuccessful -> {
+            response.body()?.data?.viewer?.let { viewer ->
+              viewer.organizations.nodes.forEach { organization ->
+                organization.repositories.nodes
+                  .filter { filter(it.viewerPermission) }
+                  .forEach { repository ->
+                    val repositoryId = repositoryDao.insert(RepositoryEntity.from(userId, organization.login, repository))
+                    repository.releases.nodes.forEach { release ->
+                      releaseDao.insert(ReleaseEntity.from(repositoryId, release))
                     }
-                  })
-                }
-                fetchOrganizationRepositories(data, totalCount, repos.size + count, organization, org.repositories().pageInfo().endCursor())
+                    fetchReleases(repositoryId, repository.releases.totalCount, repository.releases.nodes.size, organization.login, repository.name, repository.releases.pageInfo.endCursor)
+                  }
+                fetchOrganizationRepositories(userId, organization.repositories.totalCount, organization.repositories.nodes.size, organization.login, organization.repositories.pageInfo.endCursor)
               }
+              fetchOrganizations(userId, totalCount, count + viewer.organizations.nodes.size, viewer.organizations.pageInfo.endCursor)
             }
           }
-
-          override fun onFailure(e: ApolloException) {
-            authDao.clearAuthToken()
-          }
         }
-      )
+      }
     }.ignore()
   } else ignore()
 
-  private fun fetchReleases(data: MutableList<ReleaseGraph>, totalCount: Int, count: Int, owner: String, repo: String, endCursor: String?): Unit = if (totalCount > count) {
-    endCursor?.let {
-      releasesAfterQueryProvider.get(owner, repo, it).enqueue(
-        object : ApolloCall.Callback<ReleasesAfterQuery.Data>() {
-          override fun onResponse(response: Response<ReleasesAfterQuery.Data>) {
-            response.data()?.repository()?.releases()?.let { releases ->
-              releases.nodes()?.let { rs ->
-                rs.forEach { release ->
-                  data.add(ReleaseGraph.from(release))
+  private fun fetchOrganizationRepositories(userId: Long, totalCount: Int, count: Int, login: String, endCursor: String?): Unit = if (totalCount > count) {
+    endCursor?.let { after ->
+      githubApi.queryOrganizationRepositories(Repository.queryOrganization(login = login, after = after)).execute().also { response ->
+        when {
+          !response.isSuccessful -> authDao.clearAuthToken()
+          response.isSuccessful -> {
+            response.body()?.data?.organization?.let { organization ->
+              organization.repositories.nodes
+                .filter { filter(it.viewerPermission) }
+                .forEach { repository ->
+                  val repositoryId = repositoryDao.insert(RepositoryEntity.from(userId, organization.login, repository))
+                  repository.releases.nodes.forEach { release ->
+                    releaseDao.insert(ReleaseEntity.from(repositoryId, release))
+                  }
+                  fetchReleases(repositoryId, repository.releases.totalCount, repository.releases.nodes.size, organization.login, repository.name, repository.releases.pageInfo.endCursor)
                 }
-                fetchReleases(data, totalCount, rs.size + count, owner, repo, releases.pageInfo().endCursor())
-              }
+              fetchOrganizationRepositories(userId, totalCount, count + organization.repositories.nodes.size, login, organization.repositories.pageInfo.endCursor)
             }
           }
+        }
+      }
+    }.ignore()
+  } else ignore()
 
-          override fun onFailure(e: ApolloException) {
-            authDao.clearAuthToken()
+  private fun fetchReleases(repositoryId: Long, totalCount: Int, count: Int, owner: String, repo: String, endCursor: String?): Unit = if (totalCount > count) {
+    endCursor?.let { after ->
+      githubApi.queryReleases(Release.query(owner = owner, name = repo, after = after)).execute().also { response ->
+        when {
+          !response.isSuccessful -> authDao.clearAuthToken()
+          response.isSuccessful -> {
+            response.body()?.data?.repository?.let { repository ->
+              repository.releases.nodes.forEach { release ->
+                releaseDao.insert(ReleaseEntity.from(repositoryId, release))
+              }
+              fetchReleases(repositoryId, totalCount, count + repository.releases.nodes.size, owner, repo, repository.releases.pageInfo.endCursor)
+            }
           }
         }
-      )
+      }
     }.ignore()
   } else ignore()
 
