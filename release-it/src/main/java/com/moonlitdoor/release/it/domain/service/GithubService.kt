@@ -24,10 +24,7 @@ class GithubService : IntentService("GithubService") {
   private val releaseDao: ReleaseDao by inject()
   private val githubApi: GithubApi by inject()
 
-  private val LOG_TAG = "GithubService"
-
   override fun onHandleIntent(intent: Intent?) {
-    Log.i("OkHttp", "currentTime=${System.currentTimeMillis()}")
     githubApi.queryViewer(Viewer.query()).execute().also { response ->
       when {
         !response.isSuccessful -> authDao.clearAuthToken()
@@ -161,6 +158,8 @@ class GithubService : IntentService("GithubService") {
   private fun filter(permission: RepositoryPermission?) = permission == RepositoryPermission.ADMIN || permission == RepositoryPermission.WRITE
 
   companion object {
+    private const val LOG_TAG = "GithubService"
+
     fun start(context: Context) = context.startService(Intent(context, GithubService::class.java)).ignore()
   }
 }

@@ -11,7 +11,6 @@ import com.moonlitdoor.release.it.domain.repository.AuthRepository
 import com.moonlitdoor.release.it.domain.repository.ReleaseRepository
 import com.moonlitdoor.release.it.domain.repository.RepoRepository
 import com.moonlitdoor.release.it.repository.RepositoryViewModel
-import com.moonlitdoor.release.it.splash.SplashViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -21,6 +20,9 @@ import org.koin.dsl.module.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+const val HOST = "HOST"
+
+private const val AUTH_HOST = "https://github.com/"
 private const val BASE_URL = "https://api.github.com/"
 private const val ACCEPT_HEADER = "Accept"
 private const val ACCEPT_VALUE = "application/vnd.github.v3+json"
@@ -30,9 +32,11 @@ private const val AUTHORIZATION_VALUE = "token %s"
 private const val AUTHORIZATION_HEADER = "Authorization"
 
 val di = module {
+
   single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, AppDatabase.DATABASE_NAME).addMigrations(*Migrations.ALL).build() }
   single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
   single { AuthDao(get()) }
+  single(name = HOST) { AUTH_HOST }
   single {
     OkHttpClient.Builder()
       .addInterceptor(
@@ -63,7 +67,6 @@ val di = module {
   single { AuthRepository(get()) }
   single { RepoRepository(get()) }
   single { ReleaseRepository(get()) }
-  viewModel { SplashViewModel(get()) }
   viewModel { AuthViewModel(get()) }
-  viewModel { RepositoryViewModel(androidApplication(), get(), get()) }
+  viewModel { RepositoryViewModel(androidApplication(), get(), get(), get()) }
 }

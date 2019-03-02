@@ -1,35 +1,39 @@
 package com.moonlitdoor.release.it.auth
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.moonlitdoor.release.it.BuildConfig
-import com.moonlitdoor.release.it.databinding.ActivityAuthBinding
+import com.moonlitdoor.release.it.HOST
+import com.moonlitdoor.release.it.databinding.FragmentAuthBinding
 import okhttp3.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import java.io.IOException
 
-class AuthActivity : AppCompatActivity() {
+class AuthFragment : Fragment() {
 
   private val viewModel: AuthViewModel by inject()
+  private val host: String by inject(name = HOST)
 
   @SuppressLint("SetJavaScriptEnabled")
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    ActivityAuthBinding.inflate(layoutInflater).also {
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+      FragmentAuthBinding.inflate(inflater, container, false).also {
+      CookieManager.getInstance().removeAllCookies { }
       it.webView.settings.javaScriptEnabled = true
       it.webView.webViewClient = GithubWebViewClient()
-      it.webView.loadUrl(GITHUB_URL)
-      setContentView(it.root)
-    }
-  }
+        val s = "${host}login/oauth/authorize?client_id=${BuildConfig.GITHUB_CLIENT_ID}&scope=repo,read:user,read:org"
+        it.webView.loadUrl(s)
+    }.root
 
   private inner class GithubWebViewClient : WebViewClient() {
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -38,14 +42,15 @@ class AuthActivity : AppCompatActivity() {
         OkHttpClient().newCall(
           Request.Builder()
             .header(ACCEPT_HEADER, ACCEPT_VALUE)
-            .url(GITHUB_OAUTH.format(code))
+              .url(
+                  "${host}login/oauth/access_token?client_id=${BuildConfig.GITHUB_CLIENT_ID}&client_secret=${BuildConfig.GITHUB_CLIENT_SECRET}&code=$code")
             .build()
         ).enqueue(object : Callback {
           override fun onResponse(call: Call, response: Response) {
             if (response.isSuccessful) {
               response.body()?.string().let {
                 viewModel.setAuthToken(JSONObject(it).getString(ACCESS_TOKEN))
-                finish()
+                findNavController().navigateUp()
               }
             }
           }
@@ -64,14 +69,8 @@ class AuthActivity : AppCompatActivity() {
     private const val ACCESS_TOKEN = "access_token"
     private const val ACCEPT_HEADER = "Accept"
     private const val ACCEPT_VALUE = "application/json"
-    //    private const val GITHUB_URL = "https://github.com/login/oauth/authorize?client_id=${BuildConfig.GITHUB_CLIENT_ID}&scope=repo,read:user,read:org"
-    private const val GITHUB_URL = "https://github.com/login/oauth/authorize?client_id=f991898bfd6d4f6e65a7&scope=repo,read:user,read:org"
-    private const val GITHUB_OAUTH = "https://github.com/login/oauth/access_token?client_id=${BuildConfig.GITHUB_CLIENT_ID}&client_secret=${BuildConfig.GITHUB_CLIENT_SECRET}&code=%s"
 
-    private const val LOG_TAG = "AuthActivity"
-
-    fun start(context: Context) = context.startActivity(Intent(context, AuthActivity::class.java))
+    private const val LOG_TAG = "AuthFragment"
   }
-
 
 }

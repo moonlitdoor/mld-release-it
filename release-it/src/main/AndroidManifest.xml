@@ -16,21 +16,20 @@
     tools:ignore="GoogleAppIndexingWarning">
 
     <activity
-      android:name=".navigation.NavigationActivity"
-      android:label="@string/app_name"
-      android:theme="@style/AppTheme.NoActionBar">
+      android:name=".splash.SplashActivity"
+      android:noHistory="true"
+      android:theme="@style/AppTheme.Splash">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
-
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".auth.AuthActivity" />
+
+    <activity android:name=".navigation.NavigationActivity" />
 
     <service
       android:name=".domain.service.GithubService"
       android:exported="false" />
-
   </application>
 
 </manifest>
