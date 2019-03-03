@@ -25,7 +25,7 @@ class ReleasesFragment : RegisterAdapter.TitledFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
     DataBindingUtil.inflate<FragmentReleasesBinding>(inflater, R.layout.fragment_releases, container, false).also {
       it.viewModel = viewModel
-      it.setLifecycleOwner(this)
+      it.lifecycleOwner = this
       it.recyclerView.adapter = adapter
     }.root
 

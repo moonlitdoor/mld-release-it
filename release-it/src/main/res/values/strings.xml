@@ -4,4 +4,6 @@
   <string name="drawer_close">close</string>
   <string name="details">details</string>
   <string name="releases">releases</string>
+  <string name="enabled">enabled</string>
+  <string name="disabled">disabled</string>
 </resources>

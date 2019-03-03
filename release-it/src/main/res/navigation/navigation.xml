@@ -3,17 +3,27 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/navigation"
-  app:startDestination="@id/fragment_release">
+  app:startDestination="@id/fragment_repository">
 
   <fragment
-    android:id="@+id/fragment_release"
+    android:id="@+id/fragment_repository"
     android:label="@string/app_name"
     android:name="com.moonlitdoor.release.it.repository.RepositoryFragment"
-    tools:layout="@layout/fragment_auth" />
+    tools:layout="@layout/fragment_repository" />
 
   <fragment
     android:id="@+id/fragment_auth"
     android:name="com.moonlitdoor.release.it.auth.AuthFragment"
     tools:layout="@layout/fragment_auth" />
+
+  <fragment
+    android:id="@+id/fragment_settings"
+    android:name="com.moonlitdoor.release.it.settings.SettingsFragment"
+    android:label="SettingsFragment" />
+
+  <fragment
+    android:id="@+id/fragment_experiments"
+    android:name="com.moonlitdoor.release.it.experiments.ExperimentsFragment"
+    android:label="SettingsFragment" />
 
 </navigation>

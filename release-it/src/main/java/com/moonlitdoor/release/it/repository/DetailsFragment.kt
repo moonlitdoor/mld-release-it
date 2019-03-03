@@ -18,6 +18,6 @@ class DetailsFragment : RegisterAdapter.TitledFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
     DataBindingUtil.inflate<FragmentDetailsBinding>(inflater, R.layout.fragment_details, container, false).also {
       it.viewModel = viewModel
-      it.setLifecycleOwner(this)
+      it.lifecycleOwner = this
     }.root
 }
