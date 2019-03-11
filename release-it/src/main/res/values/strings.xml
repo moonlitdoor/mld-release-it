@@ -1,9 +1,12 @@
 <resources>
   <string name="app_name">ReleaseIt</string>
+  <string name="experiments">Experiments</string>
   <string name="drawer_open">open</string>
   <string name="drawer_close">close</string>
   <string name="details">details</string>
   <string name="releases">releases</string>
   <string name="enabled">enabled</string>
   <string name="disabled">disabled</string>
+  <string name="key">Key:</string>
+  <string name="remote">Remote:</string>
 </resources>

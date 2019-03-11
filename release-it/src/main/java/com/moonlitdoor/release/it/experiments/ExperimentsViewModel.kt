@@ -6,6 +6,6 @@ import com.moonlitdoor.release.it.component.BaseViewModel
 
 class ExperimentsViewModel : BaseViewModel() {
 
-  val experiments: LiveData<List<Experiment>> = MutableLiveData<List<Experiment>>().also { it.value = Experiments.experiments }
+  val experiments: LiveData<List<Experiment<*>>> = MutableLiveData<List<Experiment<*>>>().also { it.value = Experiments.experiments }
 
 }

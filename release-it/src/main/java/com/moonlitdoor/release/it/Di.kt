@@ -38,7 +38,6 @@ val di = module {
   single {
     FirebaseRemoteConfig.getInstance().also {
       it.activateFetched()
-
       it.setConfigSettings(FirebaseRemoteConfigSettings.Builder().setDeveloperModeEnabled(BuildConfig.DEBUG).build())
       it.fetch().addOnCompleteListener { task ->
         if (BuildConfig.DEBUG && task.isSuccessful) it.activateFetched()

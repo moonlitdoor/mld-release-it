@@ -19,8 +19,7 @@ class RepositoryFragment : Fragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
     FragmentRepositoryBinding.inflate(inflater, container, false).also {
       viewModel.authToken.observe(this) { token ->
-        token ?: findNavController().navigate(R.id.fragment_settings)
-//        token ?: findNavController().navigate(R.id.fragment_auth)
+        token ?: findNavController().navigate(R.id.fragment_auth)
       }
       it.viewModel = viewModel
       it.lifecycleOwner = this

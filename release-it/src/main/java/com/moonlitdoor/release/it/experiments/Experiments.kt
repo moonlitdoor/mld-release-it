@@ -6,17 +6,10 @@ import org.koin.standalone.get
 
 object Experiments : KoinComponent {
 
-
-  val TEST1 = Experiment("exp_test_1")
-  val TEST2 = Experiment("exp_test_2")
-
-  val experiments: List<Experiment> = listOf(
-      TEST1,
-      TEST2
-  )
+  val experiments: List<Experiment<*>> = listOf()
 
   init {
-    get<FirebaseRemoteConfig>().setDefaults(experiments.associateBy({ it.key }, { it.local }))
+    get<FirebaseRemoteConfig>().setDefaults(experiments.associateBy({ it.key }, { it.defaultValue }))
   }
 
 }
