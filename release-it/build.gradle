@@ -6,6 +6,8 @@ apply plugin: "kotlin-android-extensions"
 
 project.ext.archivesBaseName = project.name + "-" + gitVersion
 
+println "Building Version: ${gitVersion}"
+
 android {
     compileSdkVersion 28
     defaultConfig {
