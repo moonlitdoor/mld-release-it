@@ -28,8 +28,60 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
-        debug {
-            applicationIdSuffix = ".debug"
+    }
+    flavorDimensions "channel"
+    productFlavors {
+        local {
+            //TODO Android Gradle Plugin 3.5.0-alpha08 isDefault = true
+            dimension "channel"
+            applicationIdSuffix = ".local"
+            resValue "string", "app_name", "ReleaseIt Local"
+            resValue "string","default_web_client_id" ,"211486425497-qkngnh8t3rbgvr6h77n0j72q343u6poe.apps.googleusercontent.com"
+            resValue "string","firebase_database_url" ,"https://mld-release-it-beta.firebaseio.com"
+            resValue "string","gcm_defaultSenderId" ,"211486425497"
+            resValue "string","google_api_key" ,"AIzaSyC_e8TvhtCihe_BFGWUrIy3aLiXmW20l-c"
+            resValue "string","google_app_id" ,"1:211486425497:android:faee8a54a920befb"
+            resValue "string","google_crash_reporting_api_key" ,"AIzaSyC_e8TvhtCihe_BFGWUrIy3aLiXmW20l-c"
+            resValue "string","google_storage_bucket" ,"mld-release-it-beta.appspot.com"
+            resValue "string","project_id" ,"mld-release-it-beta"
+        }
+        develop {
+            dimension "channel"
+            applicationIdSuffix = ".develop"
+            resValue "string", "app_name", "ReleaseIt Develop"
+            resValue "string","default_web_client_id" ,"211486425497-qkngnh8t3rbgvr6h77n0j72q343u6poe.apps.googleusercontent.com"
+            resValue "string","firebase_database_url" ,"https://mld-release-it-beta.firebaseio.com"
+            resValue "string","gcm_defaultSenderId" ,"211486425497"
+            resValue "string","google_api_key" ,"AIzaSyC_e8TvhtCihe_BFGWUrIy3aLiXmW20l-c"
+            resValue "string","google_app_id" ,"1:211486425497:android:99d9cfab26bae7d2"
+            resValue "string","google_crash_reporting_api_key" ,"AIzaSyC_e8TvhtCihe_BFGWUrIy3aLiXmW20l-c"
+            resValue "string","google_storage_bucket" ,"mld-release-it-beta.appspot.com"
+            resValue "string","project_id" ,"mld-release-it-beta"
+        }
+        releaseCandidate {
+            dimension "channel"
+            applicationIdSuffix = ".release.candidate"
+            resValue "string", "app_name", "ReleaseIt Release Candidate"
+            resValue "string","default_web_client_id" ,"257745658914-eohrueth2vgdn47m44el8gj66v4o81pv.apps.googleusercontent.com"
+            resValue "string","firebase_database_url" ,"https://mld-release-it-prod.firebaseio.com"
+            resValue "string","gcm_defaultSenderId" ,"257745658914"
+            resValue "string","google_api_key" ,"AIzaSyAt5aMovo34QV3voEZwdEE5hq0WS8HYEMU"
+            resValue "string","google_app_id" ,"1:257745658914:android:42a338de03d23dda"
+            resValue "string","google_crash_reporting_api_key" ,"AIzaSyAt5aMovo34QV3voEZwdEE5hq0WS8HYEMU"
+            resValue "string","google_storage_bucket" ,"mld-release-it-prod.appspot.com"
+            resValue "string","project_id" ,"mld-release-it-prod"
+        }
+        production {
+            dimension "channel"
+            resValue "string", "app_name", "ReleaseIt"
+            resValue "string", "default_web_client_id", "257745658914-eohrueth2vgdn47m44el8gj66v4o81pv.apps.googleusercontent.com"
+            resValue "string","firebase_database_url" ,"https://mld-release-it-prod.firebaseio.com"
+            resValue "string","gcm_defaultSenderId" ,"257745658914"
+            resValue "string","google_api_key" ,"AIzaSyAt5aMovo34QV3voEZwdEE5hq0WS8HYEMU"
+            resValue "string","google_app_id" ,"1:257745658914:android:d0645e9f2fb40876"
+            resValue "string","google_crash_reporting_api_key" ,"AIzaSyAt5aMovo34QV3voEZwdEE5hq0WS8HYEMU"
+            resValue "string","google_storage_bucket" ,"mld-release-it-prod.appspot.com"
+            resValue "string","project_id" ,"mld-release-it-prod"
         }
     }
     dataBinding {
