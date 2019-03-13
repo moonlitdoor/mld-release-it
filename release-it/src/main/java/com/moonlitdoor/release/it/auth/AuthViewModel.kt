@@ -5,4 +5,5 @@ import com.moonlitdoor.release.it.domain.repository.AuthRepository
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
   fun setAuthToken(authToken: String?) = authRepository.setAuthToken(authToken)
+  val authToken = authRepository.authToken
 }

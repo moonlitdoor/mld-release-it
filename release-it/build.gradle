@@ -16,8 +16,6 @@ android {
         targetSdkVersion 28
         versionCode = gitCommitAndTagCount
         versionName = gitVersion
-        buildConfigField "String", "GITHUB_CLIENT_ID", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_ID}"
-        buildConfigField "String", "GITHUB_CLIENT_SECRET", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_SECRET}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -46,6 +44,8 @@ android {
             resValue "string","google_crash_reporting_api_key" ,"AIzaSyC_e8TvhtCihe_BFGWUrIy3aLiXmW20l-c"
             resValue "string","google_storage_bucket" ,"mld-release-it-beta.appspot.com"
             resValue "string","project_id" ,"mld-release-it-beta"
+            buildConfigField "String", "GITHUB_CLIENT_ID", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_ID_BETA}"
+            buildConfigField "String", "GITHUB_CLIENT_SECRET", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_SECRET_BETA}"
         }
         develop {
             dimension "channel"
@@ -59,6 +59,8 @@ android {
             resValue "string","google_crash_reporting_api_key" ,"AIzaSyC_e8TvhtCihe_BFGWUrIy3aLiXmW20l-c"
             resValue "string","google_storage_bucket" ,"mld-release-it-beta.appspot.com"
             resValue "string","project_id" ,"mld-release-it-beta"
+            buildConfigField "String", "GITHUB_CLIENT_ID", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_ID_BETA}"
+            buildConfigField "String", "GITHUB_CLIENT_SECRET", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_SECRET_BETA}"
         }
         releaseCandidate {
             dimension "channel"
@@ -72,6 +74,8 @@ android {
             resValue "string","google_crash_reporting_api_key" ,"AIzaSyAt5aMovo34QV3voEZwdEE5hq0WS8HYEMU"
             resValue "string","google_storage_bucket" ,"mld-release-it-prod.appspot.com"
             resValue "string","project_id" ,"mld-release-it-prod"
+            buildConfigField "String", "GITHUB_CLIENT_ID", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_ID_PROD}"
+            buildConfigField "String", "GITHUB_CLIENT_SECRET", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_SECRET_PROD}"
         }
         production {
             dimension "channel"
@@ -84,6 +88,8 @@ android {
             resValue "string","google_crash_reporting_api_key" ,"AIzaSyAt5aMovo34QV3voEZwdEE5hq0WS8HYEMU"
             resValue "string","google_storage_bucket" ,"mld-release-it-prod.appspot.com"
             resValue "string","project_id" ,"mld-release-it-prod"
+            buildConfigField "String", "GITHUB_CLIENT_ID", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_ID_PROD}"
+            buildConfigField "String", "GITHUB_CLIENT_SECRET", "${COM_MOONLITDOOR_RELEASE_IT_GITHUB_CLIENT_SECRET_PROD}"
         }
     }
     dataBinding {
@@ -108,8 +114,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
     implementation "androidx.room:room-runtime:2.1.0-alpha04"
     implementation "com.google.android.material:material:1.0.0"
+    implementation "com.google.firebase:firebase-auth:16.1.0"
     implementation "com.google.firebase:firebase-core:16.0.7"
     implementation "com.google.firebase:firebase-config:16.3.0"
+    implementation "com.google.firebase:firebase-firestore:18.1.0"
     implementation "com.jakewharton.threetenabp:threetenabp:1.1.1"
     implementation "com.moonlitdoor.shared-preference-live-data:shared-preference-live-data:0.0.6"
     implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
@@ -121,7 +129,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
     implementation "org.koin:koin-android-viewmodel:1.0.1"
 
-    debugImplementation "com.amitshekhar.android:debug-db:1.0.4"
+//    debugImplementation "com.amitshekhar.android:debug-db:1.0.4"
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.koin:koin-test:1.0.1"

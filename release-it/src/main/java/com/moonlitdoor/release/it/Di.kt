@@ -1,8 +1,9 @@
 package com.moonlitdoor.release.it
 
-import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.moonlitdoor.release.it.auth.AuthViewModel
@@ -33,8 +34,11 @@ private const val USER_AGENT_VALUE = "moonlitdoor/release-it"
 private const val AUTHORIZATION_VALUE = "token %s"
 private const val AUTHORIZATION_HEADER = "Authorization"
 
+@Suppress("RemoveExplicitTypeArguments")
 val di = module {
 
+  single { FirebaseAuth.getInstance() }
+  single { FirebaseFirestore.getInstance() }
   single {
     FirebaseRemoteConfig.getInstance().also {
       it.activateFetched()
@@ -46,7 +50,7 @@ val di = module {
   }
   single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, AppDatabase.DATABASE_NAME).addMigrations(*Migrations.ALL).build() }
   single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
-  single { AuthDao(get<SharedPreferences>()) }
+  single { AuthDao(get<FirebaseAuth>(), get<FirebaseFirestore>()) }
   single(name = HOST) { AUTH_HOST }
   single {
     OkHttpClient.Builder()

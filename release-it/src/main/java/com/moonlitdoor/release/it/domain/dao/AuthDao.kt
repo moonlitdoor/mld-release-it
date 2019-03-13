@@ -1,21 +1,48 @@
 package com.moonlitdoor.release.it.domain.dao
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
-import com.moonlitdoor.shared.preference.live.data.liveData
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GithubAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
-class AuthDao(private val preferences: SharedPreferences) {
+class AuthDao(private val auth: FirebaseAuth, private val firestore: FirebaseFirestore) {
 
-  fun setAuthToken(authToken: String?) = preferences.edit().putString(AUTH_TOKEN, authToken).apply()
+  fun setAuthToken(authToken: String?) = authToken?.let { token ->
+    auth.signInWithCredential(GithubAuthProvider.getCredential(token)).addOnCompleteListener { task ->
+      task.result?.let { result ->
+        result.user?.let { user ->
+          firestore.collection(COLLECTION_USERS).document(user.uid).set(mapOf(KEY_ACCESS_TOKEN to token))
+              .addOnSuccessListener {
+                this.user.value = user
+              }
+        }
+      }
+    }
+  }
 
-  fun getAuthToken(): String? = preferences.getString(AUTH_TOKEN, null)
+  val user = MutableLiveData<FirebaseUser?>().also {
+    it.value = auth.currentUser
+  }
 
-  fun clearAuthToken() = preferences.edit().remove(AUTH_TOKEN)
+  fun getAuthToken(): String? = authToken.value
 
-  val authToken: LiveData<String?> = preferences.liveData(AUTH_TOKEN)
+  fun clearAuthToken() = user.value?.let {
+    firestore.collection(COLLECTION_USERS).document(it.uid).delete()
+  }
+
+  val authToken: LiveData<String?> = MutableLiveData<String?>().also {
+    auth.currentUser?.let { user ->
+      firestore.collection(COLLECTION_USERS).document(user.uid).addSnapshotListener { documentSnapshot, _ ->
+        it.value = documentSnapshot?.get(KEY_ACCESS_TOKEN, String::class.java)
+      }
+    }
+  }
 
   companion object {
-    private const val AUTH_TOKEN = "com.moonlitdoor.release.it.domain.dao.AuthDao.AUTH_TOKEN"
+    private const val COLLECTION_USERS = "users"
+    private const val KEY_ACCESS_TOKEN = "accessToken"
   }
 
 }
