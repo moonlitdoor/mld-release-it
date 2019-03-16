@@ -6,9 +6,9 @@ import androidx.room.TypeConverters
 import com.moonlitdoor.release.it.domain.dao.converter.LocalDateTimeConverter
 import com.moonlitdoor.release.it.domain.dao.converter.UriConverter
 import com.moonlitdoor.release.it.domain.dao.converter.ZonedDateTimeConverter
+import com.moonlitdoor.release.it.domain.entity.OwnerEntity
 import com.moonlitdoor.release.it.domain.entity.ReleaseEntity
 import com.moonlitdoor.release.it.domain.entity.RepositoryEntity
-import com.moonlitdoor.release.it.domain.entity.UserEntity
 
 @TypeConverters(
   value = [
@@ -20,14 +20,14 @@ import com.moonlitdoor.release.it.domain.entity.UserEntity
 @Database(
   version = Migrations.VERSION,
   entities = [
-    UserEntity::class,
+    OwnerEntity::class,
     RepositoryEntity::class,
     ReleaseEntity::class
   ]
 )
 abstract class AppDatabase : RoomDatabase() {
 
-  abstract fun userDao(): UserDao
+  abstract fun ownerDao(): OwnerDao
   abstract fun repoDao(): RepositoryDao
   abstract fun releaseDao(): ReleaseDao
 

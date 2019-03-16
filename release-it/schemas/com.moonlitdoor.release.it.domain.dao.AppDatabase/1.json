@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7e192b4a6b2ae269188a0c1b69f39a4e",
+    "identityHash": "6e2b189efbf40b05ca186cc81a64eb58",
     "entities": [
       {
-        "tableName": "user",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `github_id` TEXT NOT NULL, `login` TEXT NOT NULL, `name` TEXT, `email` TEXT NOT NULL, `created` TEXT NOT NULL, `avatar_url` TEXT NOT NULL)",
+        "tableName": "owner",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `github_id` TEXT NOT NULL, `login` TEXT NOT NULL, `name` TEXT, `email` TEXT NOT NULL, `avatarUrl` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -39,14 +39,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "created",
-            "columnName": "created",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
             "fieldPath": "avatarUrl",
-            "columnName": "avatar_url",
+            "columnName": "avatarUrl",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -62,7 +56,7 @@
       },
       {
         "tableName": "repository",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, FOREIGN KEY(`owner_id`) REFERENCES `owner`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -71,8 +65,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "userId",
-            "columnName": "user_id",
+            "fieldPath": "ownerId",
+            "columnName": "owner_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -109,21 +103,21 @@
         },
         "indices": [
           {
-            "name": "index_repository_user_id",
+            "name": "index_repository_owner_id",
             "unique": false,
             "columnNames": [
-              "user_id"
+              "owner_id"
             ],
-            "createSql": "CREATE  INDEX `index_repository_user_id` ON `${TABLE_NAME}` (`user_id`)"
+            "createSql": "CREATE  INDEX `index_repository_owner_id` ON `${TABLE_NAME}` (`owner_id`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "user",
+            "table": "owner",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "user_id"
+              "owner_id"
             ],
             "referencedColumns": [
               "id"
@@ -206,7 +200,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7e192b4a6b2ae269188a0c1b69f39a4e\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6e2b189efbf40b05ca186cc81a64eb58\")"
     ]
   }
 }

@@ -15,6 +15,9 @@ interface GithubApi {
   fun queryViewerRepositories(@Body body: ViewerRepositoryQuery, @Query("fun") q: Int = 2): Call<Result<Repository.ViewerData>>
 
   @POST("/graphql")
+  fun queryOrganization(@Body body: OrganizationQuery, @Query("fun") q: Int = 1): Call<Result<Organization.Data>>
+
+  @POST("/graphql")
   fun queryViewerOrganizations(@Body body: OrganizationQuery, @Query("fun") q: Int = 3): Call<Result<Organization.Data>>
 
   @POST("/graphql")

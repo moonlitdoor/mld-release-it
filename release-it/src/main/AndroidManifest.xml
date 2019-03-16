@@ -31,7 +31,10 @@
     <activity android:name=".navigation.NavigationActivity" />
 
     <service
-      android:name=".domain.service.GithubService"
+      android:name=".domain.service.GithubViewerService"
+      android:exported="false" />
+    <service
+      android:name=".domain.service.GithubOrganizationService"
       android:exported="false" />
   </application>
 

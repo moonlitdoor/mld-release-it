@@ -1,9 +1,14 @@
 package com.moonlitdoor.release.it.domain.query
 
+import android.net.Uri
+
 class Organization(
-  val name: String?,
-  val login: String,
-  val repositories: Nodes<Repository>
+    val id: String,
+    val login: String,
+    val name: String?,
+    val email: String,
+    val avatarUrl: Uri,
+    val repositories: Nodes<Repository>
 ) {
   companion object {
 
@@ -23,19 +28,18 @@ class Organization(
         ${Repository.fragment(releases)}
 
         fragment Organization on Organization {
-          name
+          id
           login
+          name
+          email
+          avatarUrl
           ${Nodes.query("repositories", repositories, "Repository")}
         }
       """.trimIndent()
   }
 
   class Data(
-    val viewer: Viewer
-  ) {
-    class Viewer(
-      val organizations: Nodes<Organization>
-    )
-  }
+      val organization: Organization
+  )
 
 }

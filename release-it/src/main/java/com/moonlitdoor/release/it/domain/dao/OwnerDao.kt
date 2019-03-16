@@ -5,15 +5,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.moonlitdoor.release.it.domain.entity.UserEntity
+import com.moonlitdoor.release.it.domain.entity.OwnerEntity
 
 @Dao
-interface UserDao {
+interface OwnerDao {
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insert(entity: UserEntity): Long
+  fun insert(entity: OwnerEntity): Long
 
-  @Query("SELECT * FROM user")
-  fun getUsers(): LiveData<List<UserEntity>>
+  @Query("SELECT * FROM owner")
+  fun getOwners(): LiveData<List<OwnerEntity>>
 
 }

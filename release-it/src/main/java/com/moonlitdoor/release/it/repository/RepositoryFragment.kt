@@ -19,22 +19,24 @@ class RepositoryFragment : Fragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
     FragmentRepositoryBinding.inflate(inflater, container, false).also {
       viewModel.authToken.observe(this) { token ->
-        token ?: findNavController().navigate(R.id.fragment_auth)
-      }
-      it.viewModel = viewModel
-      it.lifecycleOwner = this
-      it.tabLayout.setupWithViewPager(it.viewPager)
-      it.drawerLayout.addDrawerListener(ActionBarDrawerToggle(activity, it.drawerLayout, it.toolbar, R.string.drawer_open, R.string.drawer_close).apply {
-        syncState()
-      })
-      it.navigationView.setNavigationItemSelectedListener { menuItem ->
-        viewModel.id = menuItem.itemId.toLong()
-        it.tabLayout.visibility = View.VISIBLE
-        it.drawerLayout.closeDrawers()
-        activity?.let { act ->
-          it.viewPager.adapter = RegisterAdapter(act)
-        }
-        true
+        token?.let { _ ->
+          it.viewModel = viewModel
+          it.lifecycleOwner = this
+          it.tabLayout.setupWithViewPager(it.viewPager)
+          it.drawerLayout.addDrawerListener(
+              ActionBarDrawerToggle(activity, it.drawerLayout, it.toolbar, R.string.drawer_open, R.string.drawer_close).apply {
+                syncState()
+              })
+          it.navigationView.setNavigationItemSelectedListener { menuItem ->
+            viewModel.id = menuItem.itemId.toLong()
+            it.tabLayout.visibility = View.VISIBLE
+            it.drawerLayout.closeDrawers()
+            activity?.let { act ->
+              it.viewPager.adapter = RegisterAdapter(act)
+            }
+            true
+          }
+        } ?: findNavController().navigate(R.id.fragment_auth)
       }
     }.root
 }

@@ -1,5 +1,6 @@
 package com.moonlitdoor.release.it
 
+import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
@@ -9,11 +10,13 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.moonlitdoor.release.it.auth.AuthViewModel
 import com.moonlitdoor.release.it.domain.api.GithubApi
 import com.moonlitdoor.release.it.domain.dao.*
+import com.moonlitdoor.release.it.domain.query.adapters.UriAdapter
 import com.moonlitdoor.release.it.domain.repository.AuthRepository
 import com.moonlitdoor.release.it.domain.repository.ReleaseRepository
 import com.moonlitdoor.release.it.domain.repository.RepoRepository
 import com.moonlitdoor.release.it.experiments.ExperimentsViewModel
 import com.moonlitdoor.release.it.repository.RepositoryViewModel
+import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -69,15 +72,23 @@ val di = module {
         .build()
   }
   single {
+    Moshi.Builder()
+        .add(Uri::class.java, UriAdapter())
+        .build()
+  }
+  single {
+    MoshiConverterFactory.create(get<Moshi>())
+  }
+  single {
     Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(get())
+        .addConverterFactory(get<MoshiConverterFactory>())
+        .client(get<OkHttpClient>())
         .build()
   }
   single { get<Retrofit>().create(GithubApi::class.java) }
+  single { get<AppDatabase>().ownerDao() }
   single { get<AppDatabase>().repoDao() }
-  single { get<AppDatabase>().userDao() }
   single { get<AppDatabase>().releaseDao() }
   single { AuthRepository(get<AuthDao>()) }
   single { RepoRepository(get<RepositoryDao>()) }
