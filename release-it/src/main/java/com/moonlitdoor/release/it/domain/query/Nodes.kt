@@ -11,6 +11,7 @@ class Nodes<T>(
         totalCount
         pageInfo {
           endCursor
+          hasNextPage
         }
         nodes {
           ...$fragment
@@ -20,6 +21,7 @@ class Nodes<T>(
   }
 
   class PageInfo(
-    val endCursor: String?
+      val endCursor: String?,
+      val hasNextPage: Boolean
   )
 }

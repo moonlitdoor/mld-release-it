@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.moonlitdoor.release.it.domain.query.Repository
+import com.moonlitdoor.release.it.domain.query.RepositoryPermission
 
 @Entity(tableName = "repository",
     foreignKeys = [ForeignKey(entity = OwnerEntity::class, parentColumns = ["id"], childColumns = ["owner_id"], onDelete = ForeignKey.CASCADE)])
@@ -17,7 +18,10 @@ data class RepositoryEntity(
   val githubId: String,
     val owner: String,
     val name: String,
-    val description: String?
+    val description: String?,
+    val isPrivate: Boolean,
+    @ColumnInfo(name = "repository_permission")
+    val repositoryPermission: RepositoryPermission?
 ) {
   companion object {
     fun from(ownerId: Long, owner: String, graph: Repository) = RepositoryEntity(
@@ -25,7 +29,9 @@ data class RepositoryEntity(
       githubId = graph.id,
       owner = owner,
       name = graph.name,
-      description = graph.description
+        description = graph.description,
+        isPrivate = graph.isPrivate,
+        repositoryPermission = graph.viewerPermission
     )
   }
 }

@@ -36,7 +36,10 @@ class RepositoryViewModel(application: Application, authRepository: AuthReposito
   }
 
   private val repos = repoRepository.repos.and {
-    if (it.isEmpty()) GithubViewerService.start(application)
+    if (it.isEmpty()) {
+      GithubViewerService.start(application)
+//      GithubOrganizationService.start(application, "moonlitdoor")
+    }
   }
 
   val repoNames = repos.map { repos -> repos.groupBy { it.owner }.values }

@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.moonlitdoor.release.it.domain.dao.converter.LocalDateTimeConverter
+import com.moonlitdoor.release.it.domain.dao.converter.RepositoryPermissionConverter
 import com.moonlitdoor.release.it.domain.dao.converter.UriConverter
 import com.moonlitdoor.release.it.domain.dao.converter.ZonedDateTimeConverter
 import com.moonlitdoor.release.it.domain.entity.OwnerEntity
@@ -14,7 +15,8 @@ import com.moonlitdoor.release.it.domain.entity.RepositoryEntity
   value = [
     LocalDateTimeConverter::class,
     ZonedDateTimeConverter::class,
-    UriConverter::class
+    UriConverter::class,
+    RepositoryPermissionConverter::class
   ]
 )
 @Database(

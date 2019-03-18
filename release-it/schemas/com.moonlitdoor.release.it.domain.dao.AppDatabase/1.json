@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6e2b189efbf40b05ca186cc81a64eb58",
+    "identityHash": "07755bc8de8fa9f76a2d8dfd7016861a",
     "entities": [
       {
         "tableName": "owner",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `github_id` TEXT NOT NULL, `login` TEXT NOT NULL, `name` TEXT, `email` TEXT NOT NULL, `avatarUrl` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `github_id` TEXT NOT NULL, `login` TEXT NOT NULL, `name` TEXT, `email` TEXT NOT NULL, `avatarUrl` TEXT NOT NULL, `isUser` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,12 @@
             "columnName": "avatarUrl",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isUser",
+            "columnName": "isUser",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -51,12 +57,21 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_owner_github_id",
+            "unique": true,
+            "columnNames": [
+              "github_id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_owner_github_id` ON `${TABLE_NAME}` (`github_id`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
         "tableName": "repository",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, FOREIGN KEY(`owner_id`) REFERENCES `owner`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `isPrivate` INTEGER NOT NULL, `repository_permission` TEXT, FOREIGN KEY(`owner_id`) REFERENCES `owner`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -91,6 +106,18 @@
           {
             "fieldPath": "description",
             "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isPrivate",
+            "columnName": "isPrivate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repositoryPermission",
+            "columnName": "repository_permission",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -200,7 +227,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6e2b189efbf40b05ca186cc81a64eb58\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"07755bc8de8fa9f76a2d8dfd7016861a\")"
     ]
   }
 }

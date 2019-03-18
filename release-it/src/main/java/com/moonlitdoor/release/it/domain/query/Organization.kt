@@ -12,30 +12,22 @@ class Organization(
 ) {
   companion object {
 
-    fun query(organizations: Int = QueryLimits.ORGANIZATION_NODES, repositories: Int = QueryLimits.REPOSITORY_NODES, releases: Int = QueryLimits.RELEASE_NODES, after: String? = null) = OrganizationQuery(
-      """
-        ${fragment(repositories, releases)}
+    fun query(organization: String, repositories: Int = QueryLimits.REPOSITORY_NODES, releases: Int = QueryLimits.RELEASE_NODES) = OrganizationQuery(
+        """
+          ${Repository.fragment(releases)}
 
-        query {
-          viewer {
-            ${Nodes.query("organizations", organizations, "Organization", after)}
+          query {
+            organization(login: $organization)  {
+              id
+              login
+              name
+              email
+              avatarUrl
+              ${Nodes.query("repositories", repositories, "Repository")}
+            }
           }
-        }
-      """.trimIndent()
+        """.trimIndent()
     )
-
-    fun fragment(repositories: Int, releases: Int) = """
-        ${Repository.fragment(releases)}
-
-        fragment Organization on Organization {
-          id
-          login
-          name
-          email
-          avatarUrl
-          ${Nodes.query("repositories", repositories, "Repository")}
-        }
-      """.trimIndent()
   }
 
   class Data(

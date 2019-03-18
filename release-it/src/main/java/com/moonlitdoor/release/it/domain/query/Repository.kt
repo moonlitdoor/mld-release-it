@@ -1,11 +1,12 @@
 package com.moonlitdoor.release.it.domain.query
 
 class Repository(
-  val name: String,
-  val id: String,
-  val description: String?,
-  val viewerPermission: RepositoryPermission?,
-  val releases: Nodes<Release>
+    val name: String,
+    val id: String,
+    val description: String?,
+    val isPrivate: Boolean,
+    val viewerPermission: RepositoryPermission?,
+    val releases: Nodes<Release>
 ) {
   companion object {
     fun queryViewer(repositories: Int = QueryLimits.REPOSITORY_NODES, releases: Int = QueryLimits.RELEASE_NODES, after: String? = null) = ViewerRepositoryQuery(
@@ -41,6 +42,7 @@ class Repository(
         name
         id
         description
+        isPrivate
         viewerPermission
         ${Nodes.query("releases", releases, "Release")}
       }

@@ -26,8 +26,9 @@ class GithubOrganizationService : IntentService(GithubOrganizationService::class
   private val githubApi: GithubApi by inject()
 
   override fun onHandleIntent(intent: Intent?) {
-    intent?.extras?.getString(PARAMETER_ORGANIZATION)?.let { organization ->
-      githubApi.queryOrganization(Organization.query()).execute().also { response ->
+
+    intent?.extras?.getString(PARAMETER_ORGANIZATION)?.let { org ->
+      githubApi.queryOrganization(Organization.query(org)).execute().also { response ->
         when {
           !response.isSuccessful -> authDao.clearAuthToken()
           response.isSuccessful -> {
@@ -46,7 +47,6 @@ class GithubOrganizationService : IntentService(GithubOrganizationService::class
                   organization.repositories.pageInfo.endCursor)
             }
           }
-
         }
       }
     }
@@ -62,9 +62,9 @@ class GithubOrganizationService : IntentService(GithubOrganizationService::class
             response.body()?.data?.organization?.let { organization ->
               organization.repositories.nodes
                   .forEach { repository ->
-                    val repositoryId = 1L//repositoryDao.insert(RepositoryEntity.from(userId, organization.login, repository))
+                    val repositoryId = repositoryDao.insert(RepositoryEntity.from(userId, organization.login, repository))
                     repository.releases.nodes.forEach { release ->
-                      //                    releaseDao.insert(ReleaseEntity.from(repositoryId, release))
+                      releaseDao.insert(ReleaseEntity.from(repositoryId, release))
                     }
                     fetchReleases(repositoryId, repository.releases.totalCount, repository.releases.nodes.size, organization.login, repository.name,
                         repository.releases.pageInfo.endCursor)
@@ -103,7 +103,6 @@ class GithubOrganizationService : IntentService(GithubOrganizationService::class
 
     fun start(context: Context, organization: String) = context.startService(Intent(context, GithubOrganizationService::class.java).also {
       it.putExtra(PARAMETER_ORGANIZATION, organization)
-    }
-    ).ignore()
+    }).ignore()
   }
 }
