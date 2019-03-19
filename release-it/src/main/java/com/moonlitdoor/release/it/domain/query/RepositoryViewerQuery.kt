@@ -1,5 +1,5 @@
 package com.moonlitdoor.release.it.domain.query
 
-class OrganizationRepositoryQuery(
+class RepositoryViewerQuery(
   val query: String
 )

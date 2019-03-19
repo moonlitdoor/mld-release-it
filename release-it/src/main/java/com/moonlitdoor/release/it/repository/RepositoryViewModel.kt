@@ -9,6 +9,7 @@ import com.moonlitdoor.release.it.domain.model.Repo
 import com.moonlitdoor.release.it.domain.repository.AuthRepository
 import com.moonlitdoor.release.it.domain.repository.ReleaseRepository
 import com.moonlitdoor.release.it.domain.repository.RepoRepository
+import com.moonlitdoor.release.it.domain.service.GithubOrganizationService
 import com.moonlitdoor.release.it.domain.service.GithubViewerService
 import com.moonlitdoor.release.it.extension.and
 import com.moonlitdoor.release.it.extension.map
@@ -38,7 +39,7 @@ class RepositoryViewModel(application: Application, authRepository: AuthReposito
   private val repos = repoRepository.repos.and {
     if (it.isEmpty()) {
       GithubViewerService.start(application)
-//      GithubOrganizationService.start(application, "moonlitdoor")
+      GithubOrganizationService.start(application, "moonlitdoor")
     }
   }
 

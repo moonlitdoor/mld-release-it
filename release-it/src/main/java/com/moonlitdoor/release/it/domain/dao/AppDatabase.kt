@@ -7,6 +7,7 @@ import com.moonlitdoor.release.it.domain.dao.converter.LocalDateTimeConverter
 import com.moonlitdoor.release.it.domain.dao.converter.RepositoryPermissionConverter
 import com.moonlitdoor.release.it.domain.dao.converter.UriConverter
 import com.moonlitdoor.release.it.domain.dao.converter.ZonedDateTimeConverter
+import com.moonlitdoor.release.it.domain.entity.BranchEntity
 import com.moonlitdoor.release.it.domain.entity.OwnerEntity
 import com.moonlitdoor.release.it.domain.entity.ReleaseEntity
 import com.moonlitdoor.release.it.domain.entity.RepositoryEntity
@@ -24,11 +25,13 @@ import com.moonlitdoor.release.it.domain.entity.RepositoryEntity
   entities = [
     OwnerEntity::class,
     RepositoryEntity::class,
+    BranchEntity::class,
     ReleaseEntity::class
   ]
 )
 abstract class AppDatabase : RoomDatabase() {
 
+  abstract fun branchDao(): BranchDao
   abstract fun ownerDao(): OwnerDao
   abstract fun repoDao(): RepositoryDao
   abstract fun releaseDao(): ReleaseDao

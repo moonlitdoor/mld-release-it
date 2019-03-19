@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "07755bc8de8fa9f76a2d8dfd7016861a",
+    "identityHash": "33852cac36d50ecd93abea28b58d47eb",
     "entities": [
       {
         "tableName": "owner",
@@ -153,8 +153,79 @@
         ]
       },
       {
+        "tableName": "branch",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `target_id` TEXT NOT NULL, `object_id` TEXT NOT NULL, FOREIGN KEY(`repo_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repoId",
+            "columnName": "repo_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "githubId",
+            "columnName": "github_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "targetId",
+            "columnName": "target_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "objectId",
+            "columnName": "object_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_branch_repo_id",
+            "unique": false,
+            "columnNames": [
+              "repo_id"
+            ],
+            "createSql": "CREATE  INDEX `index_branch_repo_id` ON `${TABLE_NAME}` (`repo_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "repository",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "repo_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "releases",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `draft` INTEGER NOT NULL, `description` TEXT, FOREIGN KEY(`repo_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `draft` INTEGER NOT NULL, `description` TEXT, `tag_id` TEXT, `tag_name` TEXT, `target_id` TEXT, `object_id` TEXT, FOREIGN KEY(`repo_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -189,6 +260,30 @@
           {
             "fieldPath": "description",
             "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tagId",
+            "columnName": "tag_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tagName",
+            "columnName": "tag_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "targetId",
+            "columnName": "target_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "objectId",
+            "columnName": "object_id",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -227,7 +322,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"07755bc8de8fa9f76a2d8dfd7016861a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"33852cac36d50ecd93abea28b58d47eb\")"
     ]
   }
 }

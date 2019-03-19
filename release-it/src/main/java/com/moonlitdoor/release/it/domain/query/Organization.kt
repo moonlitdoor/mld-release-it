@@ -12,26 +12,24 @@ class Organization(
 ) {
   companion object {
 
-    fun query(organization: String, repositories: Int = QueryLimits.REPOSITORY_NODES, releases: Int = QueryLimits.RELEASE_NODES) = OrganizationQuery(
-        """
-          ${Repository.fragment(releases)}
+    fun query(organization: String, repositories: Int = QueryLimits.REPOSITORY_NODES, refs: Int = QueryLimits.REF_NODES,
+              releases: Int = QueryLimits.RELEASE_NODES) =
+        OrganizationQuery(
+            """
+            ${Repository.fragment(refs, releases)}
 
-          query {
-            organization(login: $organization)  {
-              id
-              login
-              name
-              email
-              avatarUrl
-              ${Nodes.query("repositories", repositories, "Repository")}
+            query {
+              organization(login: $organization)  {
+                id
+                login
+                name
+                email
+                avatarUrl
+                ${Nodes.field("repositories", repositories, "Repository")}
+              }
             }
-          }
-        """.trimIndent()
-    )
+          """.trimIndent()
+        )
   }
-
-  class Data(
-      val organization: Organization
-  )
 
 }

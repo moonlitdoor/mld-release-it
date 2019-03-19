@@ -6,36 +6,41 @@ class Repository(
     val description: String?,
     val isPrivate: Boolean,
     val viewerPermission: RepositoryPermission?,
+    val refs: Nodes<Branch>,
     val releases: Nodes<Release>
 ) {
   companion object {
-    fun queryViewer(repositories: Int = QueryLimits.REPOSITORY_NODES, releases: Int = QueryLimits.RELEASE_NODES, after: String? = null) = ViewerRepositoryQuery(
-      """
-        ${fragment(releases)}
+    fun queryViewer(repositories: Int = QueryLimits.REPOSITORY_NODES, refs: Int = QueryLimits.REF_NODES, releases: Int = QueryLimits.RELEASE_NODES,
+                    after: String? = null) = RepositoryViewerQuery(
+        """
+        ${fragment(refs, releases)}
 
         query {
           viewer {
             login
-            ${Nodes.query("repositories", repositories, "Repository", after)}
+            ${Nodes.field("repositories", repositories, "Repository", after)}
           }
         }
       """.trimIndent()
     )
 
-    fun queryOrganization(repositories: Int = QueryLimits.REPOSITORY_NODES, releases: Int = QueryLimits.RELEASE_NODES, login: String, after: String? = null) = OrganizationRepositoryQuery(
-      """
-        ${fragment(releases)}
+    fun queryOrganization(repositories: Int = QueryLimits.REPOSITORY_NODES, refs: Int = QueryLimits.REF_NODES,
+                          releases: Int = QueryLimits.RELEASE_NODES, login: String, after: String? = null) = RepositoryOrganizationQuery(
+        """
+        ${fragment(refs, releases)}
 
         query {
           organization(login: $login) {
             login
-            ${Nodes.query("repositories", repositories, "Repository", after)}
+            ${Nodes.field("repositories", repositories, "Repository", after)}
           }
         }
       """.trimIndent()
     )
 
-    fun fragment(releases: Int) = """
+    fun fragment(refs: Int, releases: Int) =
+        """
+      ${Branch.fragment()}
       ${Release.fragment()}
 
       fragment Repository on Repository {
@@ -44,27 +49,11 @@ class Repository(
         description
         isPrivate
         viewerPermission
-        ${Nodes.query("releases", releases, "Release")}
+        ${Nodes.field("refs", refs, "Branch", refPrefix = "refs/heads/")}
+        ${Nodes.field("releases", releases, "Release")}
       }
     """.trimIndent()
 
   }
 
-  class ViewerData(
-    val viewer: Viewer
-  ) {
-    class Viewer(
-      val login: String,
-      val repositories: Nodes<Repository>
-    )
-  }
-
-  class OrganizationData(
-    val organization: Organization
-  ) {
-    class Organization(
-      val login: String,
-      val repositories: Nodes<Repository>
-    )
-  }
 }

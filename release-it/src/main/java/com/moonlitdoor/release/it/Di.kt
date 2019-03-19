@@ -87,6 +87,7 @@ val di = module {
         .build()
   }
   single { get<Retrofit>().create(GithubApi::class.java) }
+  single { get<AppDatabase>().branchDao() }
   single { get<AppDatabase>().ownerDao() }
   single { get<AppDatabase>().repoDao() }
   single { get<AppDatabase>().releaseDao() }
