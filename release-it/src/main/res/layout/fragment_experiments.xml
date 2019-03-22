@@ -27,9 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:title="@string/experiments">
-
-      </androidx.appcompat.widget.Toolbar>
+        app:title="@string/experiments" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

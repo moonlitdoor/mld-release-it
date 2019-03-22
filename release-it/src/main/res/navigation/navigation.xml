@@ -18,12 +18,15 @@
 
   <fragment
     android:id="@+id/fragment_settings"
-    android:name="com.moonlitdoor.release.it.settings.SettingsFragment"
-    android:label="SettingsFragment" />
+    android:name="com.moonlitdoor.release.it.settings.SettingsFragment$Root" />
+
+  <fragment
+    android:id="@+id/fragment_settings_sync"
+    android:name="com.moonlitdoor.release.it.settings.SettingsFragment$Sync" />
 
   <fragment
     android:id="@+id/fragment_experiments"
     android:name="com.moonlitdoor.release.it.experiments.ExperimentsFragment"
-    android:label="SettingsFragment" />
+    android:label="Experiments" />
 
 </navigation>

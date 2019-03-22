@@ -8,6 +8,9 @@ import android.widget.AdapterView
 import androidx.databinding.adapters.AdapterViewBindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +26,7 @@ class ExperimentsFragment : Fragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
       FragmentExperimentsBinding.inflate(inflater, container, false).also {
+        it.toolbar.setupWithNavController(findNavController(), AppBarConfiguration(findNavController().graph))
         it.viewModel = viewModel
         it.lifecycleOwner = this
         it.recyclerView.adapter = adapter

@@ -22,6 +22,13 @@ class RepositoryFragment : Fragment() {
         token?.let { _ ->
           it.viewModel = viewModel
           it.lifecycleOwner = this
+          it.toolbar.inflateMenu(R.menu.repository)
+          it.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+              R.id.settings -> findNavController().navigate(R.id.fragment_settings)
+            }
+            true
+          }
           it.tabLayout.setupWithViewPager(it.viewPager)
           it.drawerLayout.addDrawerListener(
               ActionBarDrawerToggle(activity, it.drawerLayout, it.toolbar, R.string.drawer_open, R.string.drawer_close).apply {
