@@ -1,7 +1,7 @@
 package com.moonlitdoor.release.it.domain.json
 
 //@JsonClass(generateAdapter = true)
-class RepoJson(
+class RepositoryJson(
   val id: Long,
   val node_id: String,
   val name: String,

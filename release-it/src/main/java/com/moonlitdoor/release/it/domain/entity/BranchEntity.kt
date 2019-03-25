@@ -7,12 +7,13 @@ import androidx.room.PrimaryKey
 import com.moonlitdoor.release.it.domain.query.Branch
 
 @Entity(tableName = "branch",
-    foreignKeys = [ForeignKey(entity = RepositoryEntity::class, parentColumns = ["id"], childColumns = ["repo_id"], onDelete = ForeignKey.CASCADE)])
+    foreignKeys = [ForeignKey(entity = RepositoryEntity::class, parentColumns = ["id"], childColumns = ["repository_id"],
+        onDelete = ForeignKey.CASCADE)])
 class BranchEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "repo_id", index = true)
-    val repoId: Long,
+    @ColumnInfo(name = "repository_id", index = true)
+    val repositoryId: Long,
     @ColumnInfo(name = "github_id")
     val githubId: String,
     val name: String?,
@@ -23,7 +24,7 @@ class BranchEntity(
 ) {
   companion object {
     fun from(repositoryId: Long, branch: Branch) = BranchEntity(
-        repoId = repositoryId,
+        repositoryId = repositoryId,
         githubId = branch.id,
         name = branch.name,
         targetId = branch.target.id,

@@ -13,7 +13,7 @@ interface ReleaseDao {
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(release: ReleaseEntity)
 
-  @Query("SELECT * FROM releases WHERE repo_id == :id")
-  fun get(id: Long): LiveData<List<ReleaseEntity>>
+  @Query("SELECT * FROM releases WHERE repository_id == :repositoryId")
+  fun get(repositoryId: Long): LiveData<List<ReleaseEntity>>
 
 }

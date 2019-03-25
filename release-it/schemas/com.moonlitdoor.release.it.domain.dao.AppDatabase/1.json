@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "33852cac36d50ecd93abea28b58d47eb",
+    "identityHash": "3d0dd98a19a0d3471fb3ffa0ece22d5d",
     "entities": [
       {
         "tableName": "owner",
@@ -154,7 +154,7 @@
       },
       {
         "tableName": "branch",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `target_id` TEXT NOT NULL, `object_id` TEXT NOT NULL, FOREIGN KEY(`repo_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repository_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `target_id` TEXT NOT NULL, `object_id` TEXT NOT NULL, FOREIGN KEY(`repository_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -163,8 +163,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "repoId",
-            "columnName": "repo_id",
+            "fieldPath": "repositoryId",
+            "columnName": "repository_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -201,12 +201,12 @@
         },
         "indices": [
           {
-            "name": "index_branch_repo_id",
+            "name": "index_branch_repository_id",
             "unique": false,
             "columnNames": [
-              "repo_id"
+              "repository_id"
             ],
-            "createSql": "CREATE  INDEX `index_branch_repo_id` ON `${TABLE_NAME}` (`repo_id`)"
+            "createSql": "CREATE  INDEX `index_branch_repository_id` ON `${TABLE_NAME}` (`repository_id`)"
           }
         ],
         "foreignKeys": [
@@ -215,7 +215,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "repo_id"
+              "repository_id"
             ],
             "referencedColumns": [
               "id"
@@ -225,7 +225,7 @@
       },
       {
         "tableName": "releases",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `draft` INTEGER NOT NULL, `description` TEXT, `tag_id` TEXT, `tag_name` TEXT, `target_id` TEXT, `object_id` TEXT, FOREIGN KEY(`repo_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repository_id` INTEGER NOT NULL, `github_id` TEXT NOT NULL, `name` TEXT, `draft` INTEGER NOT NULL, `description` TEXT, `tag_id` TEXT, `tag_name` TEXT, `target_id` TEXT, `object_id` TEXT, FOREIGN KEY(`repository_id`) REFERENCES `repository`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -234,8 +234,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "repoId",
-            "columnName": "repo_id",
+            "fieldPath": "repositoryId",
+            "columnName": "repository_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -296,12 +296,12 @@
         },
         "indices": [
           {
-            "name": "index_releases_repo_id",
+            "name": "index_releases_repository_id",
             "unique": false,
             "columnNames": [
-              "repo_id"
+              "repository_id"
             ],
-            "createSql": "CREATE  INDEX `index_releases_repo_id` ON `${TABLE_NAME}` (`repo_id`)"
+            "createSql": "CREATE  INDEX `index_releases_repository_id` ON `${TABLE_NAME}` (`repository_id`)"
           }
         ],
         "foreignKeys": [
@@ -310,7 +310,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "repo_id"
+              "repository_id"
             ],
             "referencedColumns": [
               "id"
@@ -322,7 +322,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"33852cac36d50ecd93abea28b58d47eb\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3d0dd98a19a0d3471fb3ffa0ece22d5d\")"
     ]
   }
 }

@@ -33,7 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
 
   abstract fun branchDao(): BranchDao
   abstract fun ownerDao(): OwnerDao
-  abstract fun repoDao(): RepositoryDao
+  abstract fun repositoryDao(): RepositoryDao
   abstract fun releaseDao(): ReleaseDao
 
   companion object {

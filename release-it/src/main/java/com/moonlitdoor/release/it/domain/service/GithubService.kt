@@ -40,10 +40,10 @@ abstract class GithubService(name: String) : IntentService(name) {
     }
   }
 
-  private fun fetchBranches(repositoryId: Long, totalCount: Int, count: Int, owner: String, repo: String,
-                              endCursor: String?): Unit = if (totalCount > count) {
+  private fun fetchBranches(repositoryId: Long, totalCount: Int, count: Int, owner: String, repositoryName: String,
+                            endCursor: String?): Unit = if (totalCount > count) {
     endCursor?.let { after ->
-      githubApi.queryBranches(Branch.query(owner = owner, name = repo, after = after)).execute().also { response ->
+      githubApi.queryBranches(Branch.query(owner = owner, name = repositoryName, after = after)).execute().also { response ->
         when {
           !response.isSuccessful -> authDao.clearAuthToken()
           response.isSuccessful -> {
@@ -51,7 +51,7 @@ abstract class GithubService(name: String) : IntentService(name) {
               repository.refs.nodes.forEach { branch ->
                 branchDao.insert(BranchEntity.from(repositoryId, branch))
               }
-              fetchReleases(repositoryId, totalCount, count + repository.refs.nodes.size, owner, repo, repository.refs.pageInfo.endCursor)
+              fetchReleases(repositoryId, totalCount, count + repository.refs.nodes.size, owner, repositoryName, repository.refs.pageInfo.endCursor)
             }
           }
         }
@@ -59,10 +59,10 @@ abstract class GithubService(name: String) : IntentService(name) {
     }.ignore()
   } else ignore()
 
-  private fun fetchReleases(repositoryId: Long, totalCount: Int, count: Int, owner: String, repo: String,
+  private fun fetchReleases(repositoryId: Long, totalCount: Int, count: Int, owner: String, repositoryName: String,
                             endCursor: String?): Unit = if (totalCount > count) {
     endCursor?.let { after ->
-      githubApi.queryReleases(Release.query(owner = owner, name = repo, after = after)).execute().also { response ->
+      githubApi.queryReleases(Release.query(owner = owner, name = repositoryName, after = after)).execute().also { response ->
         when {
           !response.isSuccessful -> authDao.clearAuthToken()
           response.isSuccessful -> {
@@ -70,7 +70,8 @@ abstract class GithubService(name: String) : IntentService(name) {
               repository.releases.nodes.forEach { release ->
                 releaseDao.insert(ReleaseEntity.from(repositoryId, release))
               }
-              fetchReleases(repositoryId, totalCount, count + repository.releases.nodes.size, owner, repo, repository.releases.pageInfo.endCursor)
+              fetchReleases(repositoryId, totalCount, count + repository.releases.nodes.size, owner, repositoryName,
+                  repository.releases.pageInfo.endCursor)
             }
           }
         }

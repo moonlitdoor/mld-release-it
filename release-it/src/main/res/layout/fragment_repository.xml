@@ -75,7 +75,7 @@
       android:layout_height="match_parent"
       android:layout_gravity="start"
       android:fitsSystemWindows="true"
-      app:items="@{viewModel.repoNames}" />
+      app:items="@{viewModel.repositoryNames}" />
 
   </androidx.drawerlayout.widget.DrawerLayout>
 

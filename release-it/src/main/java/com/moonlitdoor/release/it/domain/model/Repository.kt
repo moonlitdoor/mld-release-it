@@ -2,7 +2,7 @@ package com.moonlitdoor.release.it.domain.model
 
 import com.moonlitdoor.release.it.domain.entity.RepositoryEntity
 
-data class Repo(
+data class Repository(
     val id: Long = 0,
     val ownerId: Long,
     val githubId: String,
@@ -12,7 +12,7 @@ data class Repo(
 ) {
 
   companion object {
-    fun from(entity: RepositoryEntity) = Repo(
+    fun from(entity: RepositoryEntity) = Repository(
       id = entity.id,
         ownerId = entity.ownerId,
       githubId = entity.githubId,

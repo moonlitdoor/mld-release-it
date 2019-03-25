@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.adapters.AdapterViewBindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -14,6 +15,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.moonlitdoor.release.it.R
 import com.moonlitdoor.release.it.databinding.FragmentExperimentsBinding
 import com.moonlitdoor.release.it.databinding.ListItemExperimentBinding
 import com.moonlitdoor.release.it.extension.ignore
@@ -25,7 +27,7 @@ class ExperimentsFragment : Fragment() {
   private val adapter by lazy { Adapter(LayoutInflater.from(activity), this) }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-      FragmentExperimentsBinding.inflate(inflater, container, false).also {
+      DataBindingUtil.inflate<FragmentExperimentsBinding>(inflater, R.layout.fragment_experiments, container, false).also {
         it.toolbar.setupWithNavController(findNavController(), AppBarConfiguration(findNavController().graph))
         it.viewModel = viewModel
         it.lifecycleOwner = this
@@ -38,7 +40,7 @@ class ExperimentsFragment : Fragment() {
     override fun areContentsTheSame(oldItem: Experiment<*>, newItem: Experiment<*>): Boolean = oldItem == newItem
   }) {
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ExperimentViewHolder = ExperimentViewHolder(
-        ListItemExperimentBinding.inflate(layoutInflater, parent, false), lifecycleOwner)
+        DataBindingUtil.inflate(layoutInflater, R.layout.list_item_experiment, parent, false), lifecycleOwner)
 
     override fun onBindViewHolder(holder: ExperimentViewHolder, position: Int) = holder.bind(getItem(position)).ignore()
   }

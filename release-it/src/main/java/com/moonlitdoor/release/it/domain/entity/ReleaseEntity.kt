@@ -7,12 +7,13 @@ import androidx.room.PrimaryKey
 import com.moonlitdoor.release.it.domain.query.Release
 
 @Entity(tableName = "releases",
-    foreignKeys = [ForeignKey(entity = RepositoryEntity::class, parentColumns = ["id"], childColumns = ["repo_id"], onDelete = ForeignKey.CASCADE)])
+    foreignKeys = [ForeignKey(entity = RepositoryEntity::class, parentColumns = ["id"], childColumns = ["repository_id"],
+        onDelete = ForeignKey.CASCADE)])
 data class ReleaseEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "repo_id", index = true)
-    val repoId: Long,
+    @ColumnInfo(name = "repository_id", index = true)
+    val repositoryId: Long,
     @ColumnInfo(name = "github_id")
     val githubId: String,
     val name: String?,
@@ -29,7 +30,7 @@ data class ReleaseEntity(
 ) {
   companion object {
     fun from(repositoryId: Long, release: Release) = ReleaseEntity(
-        repoId = repositoryId,
+        repositoryId = repositoryId,
         githubId = release.id,
         name = release.name,
         draft = release.isDraft,

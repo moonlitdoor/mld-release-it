@@ -9,7 +9,7 @@ import retrofit2.http.Path
 
 interface ReleaseApi {
 
-  @POST("/repos/{owner}/{repo}/releases")
-  fun create(@Path("owner") owner: String, @Path("repo") repo: String, @Body release: ReleaseJson): Call<ReleaseResponseJson>
+  @POST("/repos/{owner}/{repository}/releases")
+  fun create(@Path("owner") owner: String, @Path("repository") repository: String, @Body release: ReleaseJson): Call<ReleaseResponseJson>
 
 }

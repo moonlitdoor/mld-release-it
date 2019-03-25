@@ -14,9 +14,9 @@ interface RepositoryDao {
   fun insert(repository: RepositoryEntity): Long
 
   @Query("SELECT * FROM repository")
-  fun getRepos(): LiveData<List<RepositoryEntity>>
+  fun getRepositories(): LiveData<List<RepositoryEntity>>
 
-  @Query("SELECT * FROM repository WHERE id == :id")
-  fun getRepo(id: Long): LiveData<RepositoryEntity>
+  @Query("SELECT * FROM repository WHERE id == :repositoryId")
+  fun getRepository(repositoryId: Long): LiveData<RepositoryEntity>
 
 }

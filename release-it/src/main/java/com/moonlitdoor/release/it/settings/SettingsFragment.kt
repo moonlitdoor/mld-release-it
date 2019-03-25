@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -21,7 +22,7 @@ sealed class SettingsFragment(@StringRes private val title: Int,
                               private val hierarchy: (context: Context, fragment: Fragment, screen: PreferenceScreen) -> Unit) : Fragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-      FragmentSettingsBinding.inflate(inflater, container, false).also {
+      DataBindingUtil.inflate<FragmentSettingsBinding>(inflater, R.layout.fragment_settings, container, false).also {
         it.toolbar.setTitle(title)
         it.toolbar.setupWithNavController(findNavController(), AppBarConfiguration(findNavController().graph))
         activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.settings_fragment_container, SettingsFragment.Pref(hierarchy))?.commit()

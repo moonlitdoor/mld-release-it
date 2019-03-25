@@ -13,7 +13,7 @@ import com.moonlitdoor.release.it.domain.dao.*
 import com.moonlitdoor.release.it.domain.query.adapters.UriAdapter
 import com.moonlitdoor.release.it.domain.repository.AuthRepository
 import com.moonlitdoor.release.it.domain.repository.ReleaseRepository
-import com.moonlitdoor.release.it.domain.repository.RepoRepository
+import com.moonlitdoor.release.it.domain.repository.RepositoryRepository
 import com.moonlitdoor.release.it.experiments.ExperimentsViewModel
 import com.moonlitdoor.release.it.repository.RepositoryViewModel
 import com.squareup.moshi.Moshi
@@ -89,12 +89,12 @@ val di = module {
   single { get<Retrofit>().create(GithubApi::class.java) }
   single { get<AppDatabase>().branchDao() }
   single { get<AppDatabase>().ownerDao() }
-  single { get<AppDatabase>().repoDao() }
+  single { get<AppDatabase>().repositoryDao() }
   single { get<AppDatabase>().releaseDao() }
   single { AuthRepository(get<AuthDao>()) }
-  single { RepoRepository(get<RepositoryDao>()) }
+  single { RepositoryRepository(get<RepositoryDao>()) }
   single { ReleaseRepository(get<ReleaseDao>()) }
   viewModel { AuthViewModel(get<AuthRepository>()) }
-  viewModel { RepositoryViewModel(androidApplication(), get<AuthRepository>(), get<RepoRepository>(), get<ReleaseRepository>()) }
+  viewModel { RepositoryViewModel(androidApplication(), get<AuthRepository>(), get<RepositoryRepository>(), get<ReleaseRepository>()) }
   viewModel { ExperimentsViewModel() }
 }
